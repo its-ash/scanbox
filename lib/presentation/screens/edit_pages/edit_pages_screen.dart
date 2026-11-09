@@ -37,17 +37,16 @@ class EditPagesScreen extends ConsumerWidget {
           TextButton(
             onPressed: document.pages.isEmpty
                 ? null
-                : () => Navigator.of(context)
-                      .pushNamed(AppRoutes.pdfPreview, arguments: document),
+                : () => Navigator.of(context).pushNamed(AppRoutes.pdfPreview, arguments: document),
             child: const Text('Next'),
           ),
         ],
       ),
       body: document.pages.isEmpty
-          ? const ThemeEmptyState(
+          ? const UiEmptyState(
               icon: Icons.photo_library_outlined,
               title: 'No pages yet',
-              subtitle: 'Scan a document to add pages.',
+              message: 'Scan a document to add pages.',
             )
           : ReorderableGridView(
               document: document,

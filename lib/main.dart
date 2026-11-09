@@ -18,8 +18,8 @@ class SnapPdfApp extends ConsumerWidget {
     return MaterialApp(
       title: 'SnapPDF',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
+      theme: UiTheme.light(),
+      darkTheme: UiTheme.dark(),
       themeMode: themeMode,
       initialRoute: AppRoutes.home,
       onGenerateRoute: AppRouter.onGenerateRoute,

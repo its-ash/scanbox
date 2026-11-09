@@ -94,22 +94,17 @@ class _PageEditSheetState extends ConsumerState<PageEditSheet> {
             ),
             if (_ocrText != null) ...[
               const SizedBox(height: 8),
-              ThemeCard(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    _ocrText!.isEmpty ? 'No text found.' : _ocrText!,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+              UiCard(
+                padding: const EdgeInsets.all(UiSpace.md),
+                child: Text(
+                  _ocrText!.isEmpty ? 'No text found.' : _ocrText!,
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
             const SizedBox(height: 8),
-            ThemeButton(
-              label: 'Done',
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            UiButton('Done', onPressed: () => Navigator.of(context).pop()),
           ],
         ),
       ),

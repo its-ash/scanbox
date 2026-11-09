@@ -65,9 +65,7 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
       await ref.read(documentListProvider.notifier).saveDocument(finalDoc);
 
       if (!mounted) return;
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => route.isFirst);
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (route) => route.isFirst);
     } finally {
       if (mounted) setState(() => _generating = false);
     }
@@ -82,9 +80,9 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          ThemeTextField(controller: _titleController, labelText: 'Document title'),
+          UiTextField(controller: _titleController, label: 'Document title'),
           const SizedBox(height: 20),
-          Text('Pages', style: Theme.of(context).textTheme.titleMedium),
+          Text('Pages', style: context.text.titleMedium),
           const SizedBox(height: 8),
           SizedBox(
             height: 150,
@@ -96,7 +94,7 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          Text('Page size', style: Theme.of(context).textTheme.titleMedium),
+          Text('Page size', style: context.text.titleMedium),
           const SizedBox(height: 8),
           SegmentedButton<PdfPageSize>(
             segments: PdfPageSize.values
@@ -114,12 +112,13 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
           ),
           if (_protect) ...[
             const SizedBox(height: 8),
-            ThemePasswordField(controller: _passwordController, labelText: 'PDF password'),
+            UiPasswordField(controller: _passwordController, label: 'PDF password'),
           ],
           const SizedBox(height: 28),
-          ThemeButton(
-            label: _generating ? 'Generating…' : 'Generate PDF',
+          UiButton(
+            _generating ? 'Generating…' : 'Generate PDF',
             icon: Icons.picture_as_pdf_outlined,
+            expand: true,
             onPressed: _generating ? null : _generateAndSave,
           ),
         ],

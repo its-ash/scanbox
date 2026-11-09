@@ -13,7 +13,7 @@ Clean Architecture, three layers under `lib/`:
 
 State management: Riverpod (`flutter_riverpod`), `Notifier`/`AsyncNotifier`. No Bloc.
 
-Shared design system: `theme` package (git dependency, `its-ash/theme`) — use `AppTheme.lightTheme()`/`darkTheme()` and `ThemeButton`/`ThemeCard`/`ThemeTextField`/etc. from `package:theme/theme.dart` instead of raw Material widgets where a Theme* equivalent exists.
+Shared design system: `theme` package (git dependency, `its-ash/theme`) — v2 API, all names start with `Ui`. Set up with `MaterialApp(theme: UiTheme.light(), darkTheme: UiTheme.dark())` and use `UiButton`/`UiCard`/`UiTextField`/`UiEmptyState`/etc. from `package:theme/theme.dart` instead of raw Material widgets where a `Ui*` equivalent exists. Colors come from `context.colors`, text styles from `context.text`; never hardcode them. See `../theme/COMPONENTS.md`.
 
 ## Conventions
 

@@ -54,13 +54,13 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: documentsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => ThemeErrorState(subtitle: '$error'),
+        error: (error, _) => UiErrorState(message: '$error'),
         data: (documents) {
           if (documents.isEmpty) {
-            return const ThemeEmptyState(
+            return const UiEmptyState(
               icon: Icons.document_scanner_outlined,
               title: 'No documents yet',
-              subtitle: 'Tap the camera button to scan your first document.',
+              message: 'Tap the camera button to scan your first document.',
             );
           }
           return RefreshIndicator(
@@ -70,22 +70,23 @@ class HomeScreen extends ConsumerWidget {
               itemCount: documents.length,
               itemBuilder: (context, index) {
                 final doc = documents[index];
-                return ThemeCard(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    leading: const Icon(Icons.picture_as_pdf_outlined),
-                    title: Text(doc.title),
-                    subtitle: Text(
-                      '${doc.pages.length} page${doc.pages.length == 1 ? '' : 's'} · '
-                      '${DateFormat.yMMMd().format(doc.createdAt)}',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _confirmDelete(context, ref, doc),
-                    ),
-                    onTap: () => Navigator.of(context).pushNamed(
-                      AppRoutes.documentViewer,
-                      arguments: doc,
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: UiSpace.md),
+                  child: UiCard(
+                    padding: EdgeInsets.zero,
+                    child: UiListTile(
+                      doc.title,
+                      icon: Icons.picture_as_pdf_outlined,
+                      subtitle:
+                          '${doc.pages.length} page${doc.pages.length == 1 ? '' : 's'} · '
+                          '${DateFormat.yMMMd().format(doc.createdAt)}',
+                      trailing: UiIconButton(
+                        Icons.delete_outline,
+                        tooltip: 'Delete',
+                        onPressed: () => _confirmDelete(context, ref, doc),
+                      ),
+                      onTap: () =>
+                          Navigator.of(context).pushNamed(AppRoutes.documentViewer, arguments: doc),
                     ),
                   ),
                 );
