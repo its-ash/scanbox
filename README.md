@@ -1,50 +1,56 @@
 # SnapPDF
 
-A fast, fully offline document scanner and PDF creator for Android. Built with Flutter.
+Turn your camera into an offline document scanner.
+
+**[Website](https://snappdf.itsash.in)** · **[Download APK](https://github.com/its-ash/snappdf/releases/latest/download/snappdf.apk)** · Get it in **[Ash Store](https://store.itsash.in)**
 
 ## Features
 
 - **Camera capture** with automatic edge detection and perspective correction (Google ML Kit Document Scanner)
-- **Filters** — Original, Magic Color, Black & White, Grayscale, Strong Contrast
+- **Filters**: Original, Magic Color, Black & White, Grayscale, Strong Contrast
 - **Manual rotate** and page reordering
-- **Multi-page documents** — scan, add, reorder, or delete pages before export
-- **OCR** — on-device text extraction (Google ML Kit Text Recognition)
-- **PDF export** — A4, Letter, or Legal page size
-- **Password protection** — AES-256 encryption on exported PDFs
+- **Multi-page documents**: scan, add, reorder or delete pages before export
+- **OCR**: on-device text extraction (Google ML Kit Text Recognition)
+- **PDF export**: A4, Letter or Legal page size
+- **Password protection**: AES-256 encryption on exported PDFs
 - **Share & print** straight from the document viewer
 - **Dark mode**, fully offline, no accounts
 
-## Architecture
+## Install
 
-Clean Architecture, three layers under `lib/`:
+- **Ash Store**: install [Ash Store](https://store.itsash.in) once, then install and update SnapPDF from it.
+- **APK**: download the [latest APK](https://github.com/its-ash/snappdf/releases/latest/download/snappdf.apk) on your phone and open it. Allow your browser to install unknown apps if Android asks.
 
-- `domain/` — entities (`ScanDocument`, `ScanPage`) and the `DocumentRepository` interface
-- `data/` — datasources wrapping each external package (scanner, OCR, image processing, PDF, storage) and the repository implementation
-- `presentation/` — Riverpod providers, screens, and shared widgets
-- `core/` — constants, typed exceptions, and the app router
+Requires Android 6.0 (API 23) or later.
 
-State management: [Riverpod](https://riverpod.dev). Design system: shared [`theme`](https://github.com/its-ash/theme) package.
+## Develop
 
-See [.github/copilot-instructions.md](.github/copilot-instructions.md) for full conventions.
-
-## Getting started
-
-```bash
-flutter pub get
-flutter run
-```
-
-Requires Flutter 3.44+ and Dart 3.12+. Minimum platform support: Android 6.0 (API 23).
-
-## Makefile
+Needs Flutter ≥ 3.44, Dart ≥ 3.12 and the shared theme package.
 
 ```bash
 make run      # flutter run
-make build    # release build for Android
-make deploy   # build, bump version, tag, push, and cut a GitHub release
+make build    # release APK
+make deploy   # bump version, build, tag, push, GitHub release (see store.mk)
 ```
 
-## Tech stack
+## Release
+
+`make deploy` follows the Ash Store kit (`store.mk`, `store.json`): it bumps the
+version in `pubspec.yaml`, builds, commits, tags `vX.Y.Z`, pushes, and publishes
+a GitHub release with `snappdf.apk`. Ash Store and the website pick up the new
+version from that release.
+
+## Project layout
+
+Clean Architecture, three layers under `lib/`:
+
+```
+lib/
+├── domain/         # entities (ScanDocument, ScanPage) and the DocumentRepository interface
+├── data/           # datasources for scanner, OCR, image processing, PDF, storage + repository
+├── presentation/   # Riverpod providers, screens, shared widgets
+└── core/           # constants, typed exceptions, app router
+```
 
 | Component | Package |
 |---|---|
@@ -55,3 +61,11 @@ make deploy   # build, bump version, tag, push, and cut a GitHub release
 | State management | `flutter_riverpod` |
 | Storage | `path_provider`, `shared_preferences` |
 | Sharing | `share_plus` |
+
+See [.github/copilot-instructions.md](.github/copilot-instructions.md) for full conventions.
+
+## License
+
+No license file is included yet.
+
+Built by [itsash.in](https://itsash.in).

@@ -1,0 +1,11 @@
+{
+  "id": "snappdf",
+  "name": "SnapPDF",
+  "repo": "its-ash/snappdf",
+  "package": "com.ashvini.snappdf",
+  "tagline": "Turn your camera into an offline document scanner.",
+  "description": "Point, capture, done. SnapPDF finds the page edges, cleans up the shot and builds a multi-page PDF. Filters, on-device OCR, A4/Letter/Legal export, password-protected PDFs, share and print. Fully offline, no account.",
+  "category": "Productivity",
+  "icon": "assets/icon/icon.png",
+  "homepage": "https://snappdf.itsash.in/"
+}
