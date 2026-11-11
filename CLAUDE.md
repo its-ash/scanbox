@@ -1,4 +1,9 @@
-# SnapPDF
+# Scanbox (formerly SnapPDF)
+
+The folder, Dart package `snappdf`, Android package `com.ashvini.snappdf` and the
+storage folders `snappdf_documents/` / `snappdf_thumbnails/` keep their old names on
+purpose: renaming them would break imports, lose saved documents, or stop
+existing installs from updating.
 
 Flutter offline document scanner and PDF creator for Android (camera capture, edge detection, filters, multi-page, OCR, PDF export).
 
@@ -7,7 +12,7 @@ Flutter offline document scanner and PDF creator for Android (camera capture, ed
 Clean Architecture, three layers under `lib/`:
 
 - `domain/` — entities (`ScanDocument`, `ScanPage`), `DocumentRepository` interface. No Flutter/package imports beyond Dart core.
-- `data/` — `datasources/` wrap each external package (ML Kit scanner, ML Kit OCR, `image`, `pdf`/`syncfusion_flutter_pdf`, `shared_preferences`, `share_plus`). `repositories/` implements `DocumentRepository` by composing datasources.
+- `data/` — `datasources/` wrap each external package (ML Kit scanner, `image_picker` gallery import, ML Kit OCR, `image`, `pdf`/`syncfusion_flutter_pdf`, `shared_preferences`, `share_plus`). `repositories/` implements `DocumentRepository` by composing datasources.
 - `presentation/` — Riverpod providers (`providers/`), screens (`screens/<feature>/`), shared widgets (`widgets/`).
 - `core/` — constants, exceptions (`AppException` sealed hierarchy), router (`AppRouter`/`AppRoutes`).
 
@@ -17,7 +22,8 @@ Shared design system: `theme` package (git dependency, `its-ash/theme`) — v2 A
 
 ## Conventions
 
-- Routing is `Navigator` + named routes via `AppRouter.onGenerateRoute`, not go_router.
+- Routing is `Navigator` + named routes via `AppRouter.onGenerateRoute`, not go_router. `AppRoutes.home` is `MainShell` (`UiShell` bottom tabs: Home, History, Settings); other screens are pushed over it.
+- New documents start from `startScan` / `startImageImport` (`screens/home/new_document_actions.dart`). Gallery images are copied into `snappdf_documents/` as upright JPEGs (`ImageProcessingDatasource.importImages`, runs in an isolate).
 - Documents persist as JSON in `shared_preferences` (`StorageDatasource`); images/PDFs live in app documents directory under `snappdf_documents/`.
 - All scanning/OCR/PDF errors surface as typed `AppException` subclasses from `core/errors/app_exception.dart`.
 - PDF page sizes: `PdfPageSize` enum (a4/letter/legal). Filters: `ScanFilter` enum (original/magicColor/blackAndWhite/grayscale/strongContrast), applied via the `image` package in `ImageProcessingDatasource`.
@@ -27,9 +33,9 @@ Shared design system: `theme` package (git dependency, `its-ash/theme`) — v2 A
 
 - `make run` — `flutter run`
 - `make build` — `flutter build apk --release`
-- `make deploy` — Ash Store release (from `store.mk`): bump version, build, commit, tag, push, GitHub release with `snappdf.apk`.
+- `make deploy` — Ash Store release (from `store.mk`): bump version, build, commit, tag, push, GitHub release with `scanbox.apk`.
 
 ## Release (Ash Store)
-- Published through the Ash Store kit: `store.json` (id `snappdf`), `store.mk`, `index.html` + `CNAME` (`snappdf.itsash.in`). See `../ash-store/store-kit/STORE.md`.
-- `make deploy` = bump version → build → commit, tag `vX.Y.Z`, push → GitHub release with `snappdf.apk` → repo topics, homepage, Pages. Never create releases, tags or asset names by hand.
+- Published through the Ash Store kit: `store.json` (id `scanbox`, repo its-ash/scanbox), `store.mk`, `index.html` + `CNAME` (`scanbox.itsash.in`). See `../ash-store/store-kit/STORE.md`.
+- `make deploy` = bump version → build → commit, tag `vX.Y.Z`, push → GitHub release with `scanbox.apk` → repo topics, homepage, Pages. Never create releases, tags or asset names by hand.
 - Do not edit `store.mk` here. Edit `../ash-store/store-kit/store.mk`, then run `make store-sync` at the workspace root.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snappdf/core/constants/app_constants.dart';
 import 'package:snappdf/presentation/providers/theme_mode_provider.dart';
+import 'package:theme/theme.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -39,11 +40,16 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          const ListTile(title: Text('SnapPDF'), subtitle: Text('Version 1.0.0')),
           const ListTile(
             title: Text('Offline document scanner & PDF creator'),
             subtitle: Text(AppConstants.appName),
           ),
+          const SizedBox(height: 16),
+          // No INTERNET permission: the row opens the latest APK download in the browser.
+          const UiUpdateSection(storeId: 'scanbox', checkForUpdates: false),
+          const SizedBox(height: 16),
+          const UiDeveloperSection(),
+          const SizedBox(height: 24),
         ],
       ),
     );

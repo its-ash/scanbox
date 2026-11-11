@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snappdf/core/errors/app_exception.dart';
 import 'package:snappdf/core/router/app_router.dart';
 import 'package:snappdf/domain/entities/scan_document.dart';
 import 'package:snappdf/presentation/providers/edit_session_provider.dart';
@@ -15,6 +16,16 @@ class EditPagesScreen extends ConsumerWidget {
       await ref.read(editSessionProvider.notifier).scanAndAddPages();
     } catch (_) {
       // Scan cancelled — no-op.
+    }
+  }
+
+  Future<void> _addImages(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(editSessionProvider.notifier).importAndAddPages();
+    } on ScanCancelledException {
+      // Picker closed without a selection — no-op.
+    } on AppException catch (e) {
+      if (context.mounted) context.showToast(e.message, status: UiStatus.danger);
     }
   }
 
@@ -34,6 +45,11 @@ class EditPagesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text('${document.pages.length} page${document.pages.length == 1 ? '' : 's'}'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.add_photo_alternate_outlined),
+            tooltip: 'Add images',
+            onPressed: () => _addImages(context, ref),
+          ),
           TextButton(
             onPressed: document.pages.isEmpty
                 ? null
@@ -46,7 +62,7 @@ class EditPagesScreen extends ConsumerWidget {
           ? const UiEmptyState(
               icon: Icons.photo_library_outlined,
               title: 'No pages yet',
-              message: 'Scan a document to add pages.',
+              message: 'Scan a document or add images to create pages.',
             )
           : ReorderableGridView(
               document: document,
@@ -55,6 +71,7 @@ class EditPagesScreen extends ConsumerWidget {
               onReorder: (o, n) => ref.read(editSessionProvider.notifier).reorderPages(o, n),
             ),
       floatingActionButton: FloatingActionButton(
+        tooltip: 'Scan more pages',
         onPressed: () => _addMorePages(ref),
         child: const Icon(Icons.add_a_photo_outlined),
       ),

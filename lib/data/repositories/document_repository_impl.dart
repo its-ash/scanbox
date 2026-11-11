@@ -1,4 +1,5 @@
 import 'package:snappdf/core/constants/app_constants.dart';
+import 'package:snappdf/data/datasources/image_picker_datasource.dart';
 import 'package:snappdf/data/datasources/image_processing_datasource.dart';
 import 'package:snappdf/data/datasources/ocr_datasource.dart';
 import 'package:snappdf/data/datasources/pdf_datasource.dart';
@@ -10,17 +11,20 @@ import 'package:snappdf/domain/repositories/document_repository.dart';
 class DocumentRepositoryImpl implements DocumentRepository {
   DocumentRepositoryImpl({
     required ScannerDatasource scanner,
+    required ImagePickerDatasource imagePicker,
     required ImageProcessingDatasource imageProcessing,
     required OcrDatasource ocr,
     required PdfDatasource pdf,
     required StorageDatasource storage,
   }) : _scanner = scanner,
+       _imagePicker = imagePicker,
        _imageProcessing = imageProcessing,
        _ocr = ocr,
        _pdf = pdf,
        _storage = storage;
 
   final ScannerDatasource _scanner;
+  final ImagePickerDatasource _imagePicker;
   final ImageProcessingDatasource _imageProcessing;
   final OcrDatasource _ocr;
   final PdfDatasource _pdf;
@@ -37,6 +41,12 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<List<String>> scanDocument() => _scanner.scan();
+
+  @override
+  Future<List<String>> importImages() async {
+    final picked = await _imagePicker.pickImages();
+    return _imageProcessing.importImages(picked);
+  }
 
   @override
   Future<String> applyFilter(String imagePath, ScanFilter filter) =>

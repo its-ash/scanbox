@@ -5,18 +5,18 @@ import 'package:snappdf/presentation/providers/theme_mode_provider.dart';
 import 'package:theme/theme.dart';
 
 void main() {
-  runApp(const ProviderScope(child: SnapPdfApp()));
+  runApp(const ProviderScope(child: ScanboxApp()));
 }
 
-class SnapPdfApp extends ConsumerWidget {
-  const SnapPdfApp({super.key});
+class ScanboxApp extends ConsumerWidget {
+  const ScanboxApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp(
-      title: 'SnapPDF',
+      title: 'Scanbox',
       debugShowCheckedModeBanner: false,
       theme: UiTheme.light(),
       darkTheme: UiTheme.dark(),

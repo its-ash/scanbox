@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snappdf/data/datasources/image_picker_datasource.dart';
 import 'package:snappdf/data/datasources/image_processing_datasource.dart';
 import 'package:snappdf/data/datasources/ocr_datasource.dart';
 import 'package:snappdf/data/datasources/pdf_datasource.dart';
@@ -22,6 +23,7 @@ final ocrDatasourceProvider = Provider<OcrDatasource>((ref) {
 final documentRepositoryProvider = Provider<DocumentRepository>((ref) {
   return DocumentRepositoryImpl(
     scanner: ref.watch(scannerDatasourceProvider),
+    imagePicker: ImagePickerDatasource(),
     imageProcessing: const ImageProcessingDatasource(),
     ocr: ref.watch(ocrDatasourceProvider),
     pdf: const PdfDatasource(),

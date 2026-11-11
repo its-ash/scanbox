@@ -1,4 +1,4 @@
-# SnapPDF
+# Scanbox (formerly SnapPDF)
 
 Flutter offline document scanner and PDF creator for Android (camera capture, edge detection, filters, multi-page, OCR, PDF export).
 

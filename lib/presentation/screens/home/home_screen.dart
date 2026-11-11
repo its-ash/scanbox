@@ -1,106 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:snappdf/core/router/app_router.dart';
-import 'package:snappdf/domain/entities/scan_document.dart';
 import 'package:snappdf/presentation/providers/document_list_provider.dart';
-import 'package:snappdf/presentation/providers/edit_session_provider.dart';
+import 'package:snappdf/presentation/screens/history/history_screen.dart';
+import 'package:snappdf/presentation/screens/home/new_document_actions.dart';
 import 'package:theme/theme.dart';
 
+/// Start tab: create a document (scan or images) and see the latest ones.
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.onSeeAll});
 
-  Future<void> _startScan(BuildContext context, WidgetRef ref) async {
-    ref.read(editSessionProvider.notifier).reset();
-    try {
-      await ref.read(editSessionProvider.notifier).scanAndAddPages();
-      if (!context.mounted) return;
-      Navigator.of(context).pushNamed(AppRoutes.editPages);
-    } catch (_) {
-      // Scan cancelled by user — no-op.
-    }
-  }
+  /// Opens the History tab.
+  final VoidCallback? onSeeAll;
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, ScanDocument doc) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete document'),
-        content: Text('Delete "${doc.title}"? This cannot be undone.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await ref.read(documentListProvider.notifier).deleteDocument(doc.id);
-    }
-  }
+  static const _recentCount = 3;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final documentsAsync = ref.watch(documentListProvider);
+    final recent = ref.watch(documentListProvider).valueOrNull?.take(_recentCount).toList() ?? [];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SnapPDF'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.settings),
+      appBar: AppBar(title: const Text('Scanbox')),
+      body: ListView(
+        padding: const EdgeInsets.all(UiSpace.lg),
+        children: [
+          _ActionCard(
+            icon: Icons.document_scanner_outlined,
+            title: 'Scan document',
+            subtitle: 'Use the camera with edge detection and cropping',
+            onTap: () => startScan(context, ref),
           ),
+          const SizedBox(height: UiSpace.md),
+          _ActionCard(
+            icon: Icons.photo_library_outlined,
+            title: 'Images to PDF',
+            subtitle: 'Pick photos from your gallery and turn them into a PDF',
+            onTap: () => startImageImport(context, ref),
+          ),
+          if (recent.isNotEmpty) ...[
+            const SizedBox(height: UiSpace.xl),
+            UiSectionHeader('Recent', actionLabel: 'See all', onAction: onSeeAll),
+            const SizedBox(height: UiSpace.md),
+            for (final doc in recent)
+              Padding(
+                padding: const EdgeInsets.only(bottom: UiSpace.md),
+                child: DocumentCard(document: doc),
+              ),
+          ],
         ],
       ),
-      body: documentsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => UiErrorState(message: '$error'),
-        data: (documents) {
-          if (documents.isEmpty) {
-            return const UiEmptyState(
-              icon: Icons.document_scanner_outlined,
-              title: 'No documents yet',
-              message: 'Tap the camera button to scan your first document.',
-            );
-          }
-          return RefreshIndicator(
-            onRefresh: () => ref.read(documentListProvider.notifier).refresh(),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: documents.length,
-              itemBuilder: (context, index) {
-                final doc = documents[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: UiSpace.md),
-                  child: UiCard(
-                    padding: EdgeInsets.zero,
-                    child: UiListTile(
-                      doc.title,
-                      icon: Icons.picture_as_pdf_outlined,
-                      subtitle:
-                          '${doc.pages.length} page${doc.pages.length == 1 ? '' : 's'} · '
-                          '${DateFormat.yMMMd().format(doc.createdAt)}',
-                      trailing: UiIconButton(
-                        Icons.delete_outline,
-                        tooltip: 'Delete',
-                        onPressed: () => _confirmDelete(context, ref, doc),
-                      ),
-                      onTap: () =>
-                          Navigator.of(context).pushNamed(AppRoutes.documentViewer, arguments: doc),
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _startScan(context, ref),
-        icon: const Icon(Icons.camera_alt_outlined),
-        label: const Text('Scan'),
-        shape: const StadiumBorder(),
-      ),
+    );
+  }
+}
+
+class _ActionCard extends StatelessWidget {
+  const _ActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return UiCard(
+      padding: EdgeInsets.zero,
+      child: UiListTile(title, icon: icon, subtitle: subtitle, chevron: true, onTap: onTap),
     );
   }
 }

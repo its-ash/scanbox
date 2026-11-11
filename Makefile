@@ -1,4 +1,4 @@
-STORE_ID := snappdf
+STORE_ID := scanbox
 
 .PHONY: run build clean
 

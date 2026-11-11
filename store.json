@@ -1,11 +1,11 @@
 {
-  "id": "snappdf",
-  "name": "SnapPDF",
-  "repo": "its-ash/snappdf",
+  "id": "scanbox",
+  "name": "Scanbox",
+  "repo": "its-ash/scanbox",
   "package": "com.ashvini.snappdf",
   "tagline": "Turn your camera into an offline document scanner.",
-  "description": "Point, capture, done. SnapPDF finds the page edges, cleans up the shot and builds a multi-page PDF. Filters, on-device OCR, A4/Letter/Legal export, password-protected PDFs, share and print. Fully offline, no account.",
+  "description": "Point, capture, done. Scanbox finds the page edges, cleans up the shot and builds a multi-page PDF. Filters, on-device OCR, A4/Letter/Legal export, password-protected PDFs, share and print. Fully offline, no account.",
   "category": "Productivity",
   "icon": "assets/icon/logo-1024.png",
-  "homepage": "https://snappdf.itsash.in/"
+  "homepage": "https://scanbox.itsash.in/"
 }

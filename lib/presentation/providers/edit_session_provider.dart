@@ -19,7 +19,14 @@ class EditSessionNotifier extends Notifier<ScanDocument> {
   void loadExisting(ScanDocument document) => state = document;
 
   Future<void> scanAndAddPages() async {
-    final imagePaths = await ref.read(documentRepositoryProvider).scanDocument();
+    _addPages(await ref.read(documentRepositoryProvider).scanDocument());
+  }
+
+  Future<void> importAndAddPages() async {
+    _addPages(await ref.read(documentRepositoryProvider).importImages());
+  }
+
+  void _addPages(List<String> imagePaths) {
     final newPages = imagePaths
         .map((path) => ScanPage(id: const Uuid().v4(), originalImagePath: path, processedImagePath: path))
         .toList();
