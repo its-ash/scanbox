@@ -8,7 +8,6 @@ class AppConstants {
   static const String appName = 'Scanbox';
   static const String documentsDirName = 'snappdf_documents';
   static const String thumbnailsDirName = 'snappdf_thumbnails';
-  static const String prefsKeyThemeMode = 'theme_mode';
   static const double jpegQuality = 92;
   static const int maxPagesPerDocument = 200;
 }
