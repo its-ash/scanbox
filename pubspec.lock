@@ -938,7 +938,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "953160a8971d62d65ebbc076446a386272195c17"
+      resolved-ref: f2de131dc8e61d6a0533d23d4c89bedc308f248a
       url: "https://github.com/its-ash/theme"
     source: git
     version: "4.0.0"
