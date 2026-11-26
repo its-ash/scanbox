@@ -62,7 +62,7 @@ class DocumentCard extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed == true && context.mounted) {
       await ref.read(documentListProvider.notifier).deleteDocument(document.id);
     }
   }

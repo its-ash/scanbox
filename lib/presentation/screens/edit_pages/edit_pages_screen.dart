@@ -11,11 +11,13 @@ import 'package:theme/theme.dart';
 class EditPagesScreen extends ConsumerWidget {
   const EditPagesScreen({super.key});
 
-  Future<void> _addMorePages(WidgetRef ref) async {
+  Future<void> _addMorePages(BuildContext context, WidgetRef ref) async {
     try {
       await ref.read(editSessionProvider.notifier).scanAndAddPages();
-    } catch (_) {
+    } on ScanCancelledException {
       // Scan cancelled — no-op.
+    } on AppException catch (e) {
+      if (context.mounted) context.showToast(e.message, status: UiStatus.danger);
     }
   }
 
@@ -72,7 +74,7 @@ class EditPagesScreen extends ConsumerWidget {
             ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Scan more pages',
-        onPressed: () => _addMorePages(ref),
+        onPressed: () => _addMorePages(context, ref),
         child: const Icon(Icons.add_a_photo_outlined),
       ),
     );
@@ -98,7 +100,7 @@ class ReorderableGridView extends StatelessWidget {
     return ReorderableListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: document.pages.length,
-      onReorder: onReorder,
+      onReorderItem: onReorder,
       itemBuilder: (context, index) {
         final page = document.pages[index];
         return Padding(

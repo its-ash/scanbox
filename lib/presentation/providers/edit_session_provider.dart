@@ -41,25 +41,32 @@ class EditSessionNotifier extends Notifier<ScanDocument> {
 
   void reorderPages(int oldIndex, int newIndex) {
     final pages = [...state.pages];
-    final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final page = pages.removeAt(oldIndex);
-    pages.insert(index, page);
+    pages.insert(newIndex, page);
     state = state.copyWith(pages: pages);
   }
 
   Future<void> applyFilter(String pageId, ScanFilter filter) async {
-    final page = state.pages.firstWhere((p) => p.id == pageId);
-    final processed = await ref
-        .read(documentRepositoryProvider)
-        .applyFilter(page.originalImagePath, filter);
-    _updatePage(page.copyWith(processedImagePath: processed, filter: filter));
+    final page = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (page == null) return;
+    final repo = ref.read(documentRepositoryProvider);
+    var processed = await repo.applyFilter(page.originalImagePath, filter);
+    if (page.rotationDegrees != 0) {
+      processed = await repo.rotateImage(processed, page.rotationDegrees);
+    }
+    final current = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (current == null) return;
+    _updatePage(current.copyWith(processedImagePath: processed, filter: filter));
   }
 
   Future<void> rotatePage(String pageId) async {
-    final page = state.pages.firstWhere((p) => p.id == pageId);
+    final page = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (page == null) return;
     final rotated = await ref.read(documentRepositoryProvider).rotateImage(page.processedImagePath, 90);
+    final current = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (current == null) return;
     _updatePage(
-      page.copyWith(
+      current.copyWith(
         processedImagePath: rotated,
         rotationDegrees: (page.rotationDegrees + 90) % 360,
       ),
@@ -67,9 +74,12 @@ class EditSessionNotifier extends Notifier<ScanDocument> {
   }
 
   Future<void> runOcr(String pageId) async {
-    final page = state.pages.firstWhere((p) => p.id == pageId);
+    final page = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (page == null) return;
     final text = await ref.read(documentRepositoryProvider).extractText(page.processedImagePath);
-    _updatePage(page.copyWith(ocrText: text));
+    final current = state.pages.where((p) => p.id == pageId).firstOrNull;
+    if (current == null) return;
+    _updatePage(current.copyWith(ocrText: text));
   }
 
   void _updatePage(ScanPage updated) {

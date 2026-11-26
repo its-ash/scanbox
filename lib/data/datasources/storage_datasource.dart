@@ -55,8 +55,10 @@ class StorageDatasource {
   }
 
   void _tryDelete(String path) {
-    final file = File(path);
-    if (file.existsSync()) file.deleteSync();
+    try {
+      final file = File(path);
+      if (file.existsSync()) file.deleteSync();
+    } on FileSystemException catch (_) {}
   }
 
   Future<void> shareFile(String path) async {

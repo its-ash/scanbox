@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_document_scanner/google_mlkit_document_scanner.dart';
 import 'package:snappdf/core/errors/app_exception.dart';
 
@@ -19,8 +20,15 @@ class ScannerDatasource {
       return images;
     } on ScanCancelledException {
       rethrow;
+    } on PlatformException catch (e) {
+      final code = e.code.toLowerCase();
+      final msg = (e.message ?? '').toLowerCase();
+      if (e.message == 'Operation cancelled' || code.contains('cancel') || msg.contains('cancel')) {
+        throw const ScanCancelledException();
+      }
+      throw ScanException(e.message ?? e.code);
     } catch (e) {
-      throw const ScanCancelledException();
+      throw ScanException('$e');
     }
   }
 

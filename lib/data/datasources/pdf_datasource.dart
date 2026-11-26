@@ -58,11 +58,13 @@ class PdfDatasource {
 
   List<int> _encrypt(List<int> bytes, String password) {
     final sfDoc = sf.PdfDocument(inputBytes: bytes);
-    sfDoc.security.userPassword = password;
-    sfDoc.security.ownerPassword = password;
-    sfDoc.security.algorithm = sf.PdfEncryptionAlgorithm.aesx256Bit;
-    final encrypted = sfDoc.saveSync();
-    sfDoc.dispose();
-    return encrypted;
+    try {
+      sfDoc.security.userPassword = password;
+      sfDoc.security.ownerPassword = password;
+      sfDoc.security.algorithm = sf.PdfEncryptionAlgorithm.aesx256Bit;
+      return sfDoc.saveSync();
+    } finally {
+      sfDoc.dispose();
+    }
   }
 }

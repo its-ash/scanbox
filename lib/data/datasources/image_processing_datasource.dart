@@ -51,11 +51,15 @@ class ImageProcessingDatasource {
     final out = await Isolate.run(() {
       final written = <String>[];
       for (final path in paths) {
-        final decoded = img.decodeImage(File(path).readAsBytesSync());
-        if (decoded == null) continue;
-        final outPath = p.join(workDir, '${const Uuid().v4()}.jpg');
-        File(outPath).writeAsBytesSync(img.encodeJpg(img.bakeOrientation(decoded), quality: quality));
-        written.add(outPath);
+        try {
+          final decoded = img.decodeImage(File(path).readAsBytesSync());
+          if (decoded == null) continue;
+          final outPath = p.join(workDir, '${const Uuid().v4()}.jpg');
+          File(outPath).writeAsBytesSync(img.encodeJpg(img.bakeOrientation(decoded), quality: quality));
+          written.add(outPath);
+        } catch (_) {
+          continue;
+        }
       }
       return written;
     });

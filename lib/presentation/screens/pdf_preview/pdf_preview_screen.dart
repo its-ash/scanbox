@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snappdf/core/constants/app_constants.dart';
-import 'package:snappdf/core/router/app_router.dart';
+import 'package:snappdf/core/errors/app_exception.dart';
 import 'package:snappdf/domain/entities/scan_document.dart';
 import 'package:snappdf/presentation/providers/document_list_provider.dart';
 import 'package:snappdf/presentation/providers/repository_providers.dart';
@@ -65,7 +65,9 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
       await ref.read(documentListProvider.notifier).saveDocument(finalDoc);
 
       if (!mounted) return;
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (route) => route.isFirst);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } on AppException catch (e) {
+      if (mounted) context.showToast(e.message, status: UiStatus.danger);
     } finally {
       if (mounted) setState(() => _generating = false);
     }
@@ -89,7 +91,7 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: document.pages.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, i) => PageThumbnail(page: document.pages[i], index: i),
             ),
           ),

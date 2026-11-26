@@ -10,18 +10,13 @@ import 'package:snappdf/domain/repositories/document_repository.dart';
 
 class DocumentRepositoryImpl implements DocumentRepository {
   DocumentRepositoryImpl({
-    required ScannerDatasource scanner,
-    required ImagePickerDatasource imagePicker,
-    required ImageProcessingDatasource imageProcessing,
-    required OcrDatasource ocr,
-    required PdfDatasource pdf,
-    required StorageDatasource storage,
-  }) : _scanner = scanner,
-       _imagePicker = imagePicker,
-       _imageProcessing = imageProcessing,
-       _ocr = ocr,
-       _pdf = pdf,
-       _storage = storage;
+    required this._scanner,
+    required this._imagePicker,
+    required this._imageProcessing,
+    required this._ocr,
+    required this._pdf,
+    required this._storage,
+  });
 
   final ScannerDatasource _scanner;
   final ImagePickerDatasource _imagePicker;

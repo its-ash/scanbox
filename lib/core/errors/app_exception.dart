@@ -10,6 +10,10 @@ final class ScanCancelledException extends AppException {
   const ScanCancelledException() : super('Document scan was cancelled.');
 }
 
+final class ScanException extends AppException {
+  const ScanException(String reason) : super('Failed to scan document: $reason.');
+}
+
 final class PermissionDeniedException extends AppException {
   const PermissionDeniedException(String permission)
     : super('Permission denied: $permission.');

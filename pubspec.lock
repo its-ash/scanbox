@@ -938,10 +938,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f2de131dc8e61d6a0533d23d4c89bedc308f248a
+      resolved-ref: "214614f8d2bbeed27520b2977462df735118a909"
       url: "https://github.com/its-ash/theme"
     source: git
-    version: "4.0.0"
+    version: "5.0.0"
   typed_data:
     dependency: transitive
     description:
